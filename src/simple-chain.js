@@ -1,4 +1,4 @@
-// const { NotImplementedError } = require('../extensions/index.js');
+const { NotImplementedError } = require('../extensions/index.js');
 
 /**
  * Implement chainMaker object according to task description
@@ -9,13 +9,17 @@ const chainMaker = {
   getLength() {
     return this.chain.length;
   },
-  addLink(value = "") {
-    this.chain.push(value);
+  addLink(value) {
+    if (value === null) this.chain.push("null");
+    else this.chain.push(value);
     return this;
   },
   removeLink(position) {
     // try {
-      if (!Number.isInteger(position) || position - 1 < 0 || position - 1 >= this.chain.length) throw new Error ('You can\'t remove incorrect link!');
+      if (!Number.isInteger(position) || position - 1 < 0 || position - 1 >= this.chain.length) {
+        this.chain = [];
+        throw new Error ('You can\'t remove incorrect link!');
+      }
       this.chain.splice(position - 1, 1)
       return this;
     // }
@@ -31,11 +35,16 @@ const chainMaker = {
     return this;
   },
   finishChain() {
-    return `( ${this.chain.join(" )~~( ")} )`
+    try {
+      return `( ${this.chain.join(" )~~( ")} )`
+    }
+    finally {
+      this.chain = [];
+    }
   }
 };
 
-console.log(chainMaker.addLink(1).addLink(2).addLink(3).removeLink(4))
+// console.log(chainMaker.addLink('GHI').addLink(Infinity).reverseChain().addLink(333).reverseChain().reverseChain().addLink(0).reverseChain().reverseChain().addLink('GHI').finishChain())
 module.exports = {
   chainMaker
 };
